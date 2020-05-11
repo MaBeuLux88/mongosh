@@ -4,6 +4,7 @@ import { ShellApiAutocompleter } from './autocompleter/shell-api-autocompleter';
 import { Interpreter, InterpreterEnvironment, EvaluationResult } from './interpreter';
 import { Runtime } from './runtime';
 import { EventEmitter } from 'events';
+import { ShellInternalState, ReplPlatform } from '@mongosh/shell-api';
 
 import ShellEvaluator from '@mongosh/shell-evaluator';
 
@@ -16,31 +17,31 @@ import ShellEvaluator from '@mongosh/shell-evaluator';
  * calls rather than requiring event emitter bridges or RPC.
  */
 export class OpenContextRuntime implements Runtime {
-  private serviceProvider: ServiceProvider;
   private interpreter: Interpreter;
   private interpreterEnvironment: InterpreterEnvironment;
   private autocompleter: ShellApiAutocompleter;
   private shellEvaluator: ShellEvaluator;
+  private internalState: ShellInternalState;
 
   constructor(
     serviceProvider: ServiceProvider,
     interpreterEnvironment: InterpreterEnvironment,
+    platform: ReplPlatform,
     messageBus?: {
       emit: (eventName: string, ...args: any[]) => void;
-    }
+    },
   ) {
-    this.serviceProvider = serviceProvider;
     this.interpreterEnvironment = interpreterEnvironment;
-    this.shellEvaluator = new ShellEvaluator(serviceProvider, messageBus || new EventEmitter());
-    this.shellEvaluator.setCtx(this.interpreterEnvironment.getContextObject());
+    this.internalState = new ShellInternalState(platform, serviceProvider, messageBus || new EventEmitter());
+    this.shellEvaluator = new ShellEvaluator(this.internalState);
+    this.internalState.setCtx(this.interpreterEnvironment.getContextObject());
     this.interpreter = new Interpreter(this.interpreterEnvironment);
   }
 
   async getCompletions(code: string): Promise<Completion[]> {
     if (!this.autocompleter) {
-      const buildInfo = await this.serviceProvider.buildInfo();
-      const serverVersion = buildInfo.version;
-      this.autocompleter = new ShellApiAutocompleter(serverVersion);
+      await this.internalState.fetchConnectionInfo();
+      this.autocompleter = new ShellApiAutocompleter(this.internalState.connectionInfo.buildInfo.version);
     }
 
     return this.autocompleter.getCompletions(code);

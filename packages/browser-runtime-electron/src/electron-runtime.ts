@@ -11,6 +11,8 @@ import {
 
 import { ServiceProvider } from '@mongosh/service-provider-core';
 
+import { ReplPlatform } from '@mongosh/shell-api';
+
 export class ElectronRuntime implements Runtime {
   private openContextRuntime: OpenContextRuntime;
 
@@ -20,6 +22,7 @@ export class ElectronRuntime implements Runtime {
     this.openContextRuntime = new OpenContextRuntime(
       serviceProvider,
       new ElectronInterpreterEnvironment({}),
+      ReplPlatform.Compass,
       messageBus
     );
   }

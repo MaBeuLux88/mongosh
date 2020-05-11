@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import traverse from '@babel/traverse';
 
-import { signatures } from '@mongosh/shell-api';
+const signatures = require('../test/shell-api-signatures');
 
 import AsyncWriter, { checkHasAsyncChild } from './async-writer-babel';
 import SymbolTable from './symbol-table';
@@ -12,7 +12,7 @@ const skipPath = (p): any => {
   expect(Object.keys(p)).to.deep.equal([ 'type', 'returnsPromise', 'returnType', 'path' ]);
   return { returnType: p.returnType, returnsPromise: p.returnsPromise, type: p.type };
 };
-const myType = { type: 'myType', attributes: { myAttr: signatures.unknown } };
+const myType = { type: 'myType', attributes: { myAttr: { type: 'unknown', attributes: {} } } };
 
 describe('checkHasAsyncChild', () => {
   ['hasAsyncChild', 'returnsPromise'].forEach((key) => {
@@ -109,7 +109,7 @@ describe('async-writer-babel', () => {
       it('decorates Identifier', (done) => {
         traverse(ast, {
           Identifier(path) {
-            expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+            expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
             done();
           }
         });
@@ -123,7 +123,7 @@ describe('async-writer-babel', () => {
         db: signatures.Database,
         c: signatures.Collection,
       });
-      writer.symbols.add('t', signatures.unknown);
+      writer.symbols.add('t', { type: 'unknown', attributes: {} });
     });
     it('compiles db.coll.insertOne({})', () => {
       expect(writer.process('db.coll.insertOne({})'))
@@ -161,7 +161,7 @@ class Test {
           db: signatures.Database,
           c: signatures.Collection,
         });
-        writer.symbols.add('t', signatures.unknown);
+        writer.symbols.add('t', { type: 'unknown', attributes: {} });
       });
       describe('dot notation', () => {
         describe('with Database lhs type', () => {
@@ -186,7 +186,7 @@ class Test {
             traverse(ast, {
               Identifier(path) {
                 if (path.node.name === 'coll') {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               }
@@ -224,7 +224,7 @@ class Test {
               traverse(ast, {
                 Identifier(path) {
                   if (path.node.name === 'insertOne') {
-                    expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                    expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                     done();
                   }
                 }
@@ -261,7 +261,7 @@ class Test {
               traverse(ast, {
                 Identifier(path) {
                   if (path.node.name === 'x') {
-                    expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                    expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                     done();
                   }
                 }
@@ -270,7 +270,7 @@ class Test {
             it('decorates MemberExpression', (done) => {
               traverse(ast, {
                 MemberExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
@@ -289,7 +289,7 @@ class Test {
             traverse(ast, {
               Identifier(path) {
                 if (path.node.name === 'x') {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               }
@@ -299,7 +299,7 @@ class Test {
             traverse(ast, {
               Identifier(path) {
                 if (path.node.name === 'coll') {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               }
@@ -308,7 +308,7 @@ class Test {
           it('decorates MemberExpression', (done) => {
             traverse(ast, {
               MemberExpression(path) {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             });
@@ -338,7 +338,7 @@ class Test {
             traverse(ast, {
               StringLiteral(path) {
                 if (path.node.value === 'insertOne') {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               }
@@ -383,7 +383,7 @@ class Test {
               traverse(ast, {
                 Identifier(path) {
                   if (path.node.name === 't') {
-                    expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                    expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                     done();
                   }
                 }
@@ -392,7 +392,7 @@ class Test {
             it('decorates node.key CallExpression', (done) => {
               traverse(ast, {
                 CallExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
@@ -400,7 +400,7 @@ class Test {
             it('decorates MemberExpression', (done) => {
               traverse(ast, {
                 MemberExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
@@ -441,7 +441,7 @@ class Test {
           traverse(ast, {
             Identifier(path) {
               if (path.node.name === 'd') {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             }
@@ -601,7 +601,7 @@ class Test {
           ObjectExpression(path) {
             expect(path.node['shellType']).to.deep.equal({
               type: 'object',
-              attributes: { x: signatures.unknown },
+              attributes: { x: { type: 'unknown', attributes: {} } },
               hasAsyncChild: false
             });
             done();
@@ -611,7 +611,7 @@ class Test {
       it('decorates element', (done) => {
         traverse(ast, {
           Property(path) {
-            expect(path.node.value['shellType']).to.deep.equal(signatures.unknown);
+            expect(path.node.value['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
             done();
           }
         });
@@ -633,7 +633,7 @@ class Test {
               expect(path.node['shellType'].hasAsyncChild).to.equal(false);
               expect(Object.keys(path.node['shellType'].attributes)).to.deep.equal(['method']);
               expect(skipPath(path.node['shellType'].attributes.method)).to.deep.equal({
-                type: 'function', returnType: signatures.unknown, returnsPromise: false
+                type: 'function', returnType: { type: 'unknown', attributes: {} }, returnsPromise: false
               });
               done();
             }
@@ -775,7 +775,7 @@ class Test {
           ArrayExpression(path) {
             expect(path.node['shellType']).to.deep.equal({
               type: 'array',
-              attributes: { '0': signatures.unknown },
+              attributes: { '0': { type: 'unknown', attributes: {} } },
               hasAsyncChild: false
             });
             done();
@@ -785,7 +785,7 @@ class Test {
       it('decorates element', (done) => {
         traverse(ast, {
           Identifier(path) {
-            expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+            expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
             done();
           }
         });
@@ -797,7 +797,7 @@ class Test {
       before(() => {
         writer = new AsyncWriter(signatures);
         writer.symbols.initializeApiObjects({
-          t: signatures.unknown,
+          t: { type: 'unknown', attributes: {} },
         });
         input = 'x()';
         ast = writer.getTransform(input).ast;
@@ -808,7 +808,7 @@ class Test {
       it('decorates CallExpression', (done) => {
         traverse(ast, {
           CallExpression(path) {
-            expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+            expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
             done();
           }
         });
@@ -834,7 +834,7 @@ class Test {
           it('decorates CallExpression', (done) => {
             traverse(ast, {
               CallExpression(path) {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             });
@@ -855,7 +855,7 @@ class Test {
           it('decorates CallExpression', (done) => {
             traverse(ast, {
               CallExpression(path) {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             });
@@ -932,7 +932,7 @@ class Test {
           it('decorates CallExpression', (done) => {
             traverse(ast, {
               CallExpression(path) {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             });
@@ -953,7 +953,7 @@ class Test {
           it('decorates CallExpression', (done) => {
             traverse(ast, {
               CallExpression(path) {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             });
@@ -1064,7 +1064,7 @@ function f() {
       });
       it('updates symbol table when called', () => {
         writer.compile('f()');
-        expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+        expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
       });
     });
     describe('LHS is function', () => {
@@ -1128,14 +1128,14 @@ function f() {
           it('decorates VariableDeclarator', (done) => {
             traverse(ast, {
               VariableDeclarator(path) {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             });
           });
           it('adds to symbol table', () => {
             expect(spy.add.calledOnce).to.be.false;
-            expect(spy.scopeAt(1)).to.deep.equal({ x: signatures.unknown });
+            expect(spy.scopeAt(1)).to.deep.equal({ x: { type: 'unknown', attributes: {} } });
           });
         });
         describe('with assignment', () => {
@@ -1154,14 +1154,14 @@ function f() {
             it('decorates VariableDeclarator', (done) => {
               traverse(ast, {
                 VariableDeclarator(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
             });
             it('adds to symbol table', () => {
               expect(spy.add.calledOnce).to.be.false;
-              expect(spy.scopeAt(1)).to.deep.equal({ x: signatures.unknown });
+              expect(spy.scopeAt(1)).to.deep.equal({ x: { type: 'unknown', attributes: {} } });
             });
           });
           describe('rhs is known type', () => {
@@ -1179,7 +1179,7 @@ function f() {
             it('decorates VariableDeclarator', (done) => {
               traverse(ast, {
                 VariableDeclarator(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
@@ -1204,12 +1204,12 @@ function f() {
           });
           it('adds to symbol table', () => {
             expect(spy.add.calledOnce).to.be.false;
-            expect(spy.scopeAt(1)).to.deep.equal({ v: signatures.unknown });
+            expect(spy.scopeAt(1)).to.deep.equal({ v: { type: 'unknown', attributes: {} } });
           });
         });
       });
       describe('inside function scope', () => {
-        const type = { returnType: signatures.unknown, returnsPromise: false, type: 'function' };
+        const type = { returnType: { type: 'unknown', attributes: {} }, returnsPromise: false, type: 'function' };
         before(() => {
           spy = sinon.spy(new SymbolTable([ { db: signatures.Database }, {} ], signatures));
           writer = new AsyncWriter(signatures, spy);
@@ -1264,8 +1264,8 @@ function f() {
             });
             it('adds to symbol table', () => {
               expect(spy.add.calledOnce).to.be.true;
-              expect(spy.add.getCall(0).args).to.deep.equal(['x', signatures.unknown]);
-              expect(spy.scopeAt(1)).to.deep.equal({ x: signatures.unknown });
+              expect(spy.add.getCall(0).args).to.deep.equal(['x', { type: 'unknown', attributes: {} }]);
+              expect(spy.scopeAt(1)).to.deep.equal({ x: { type: 'unknown', attributes: {} } });
             });
           });
           describe('rhs is known type', () => {
@@ -1301,13 +1301,13 @@ function f() {
           });
           it('adds to symbol table', () => {
             expect(spy.add.calledOnce).to.be.true;
-            expect(spy.add.getCall(0).args).to.deep.equal(['myVar', signatures.unknown]);
-            expect(spy.scopeAt(2)).to.deep.equal({ myVar: signatures.unknown });
+            expect(spy.add.getCall(0).args).to.deep.equal(['myVar', { type: 'unknown', attributes: {} }]);
+            expect(spy.scopeAt(2)).to.deep.equal({ myVar: { type: 'unknown', attributes: {} } });
           });
         });
       });
       describe('inside function scope', () => {
-        const type = { returnType: signatures.unknown, returnsPromise: false, type: 'function' };
+        const type = { returnType: { type: 'unknown', attributes: {} }, returnsPromise: false, type: 'function' };
         before(() => {
           spy = sinon.spy(new SymbolTable([ { db: signatures.Database }, {}], signatures));
           writer = new AsyncWriter(signatures, spy);
@@ -1361,8 +1361,8 @@ function f() {
           });
           it('adds to symbol table', () => {
             expect(spy.add.calledOnce).to.be.true;
-            expect(spy.add.getCall(0).args).to.deep.equal(['x', signatures.unknown]);
-            expect(spy.scopeAt(1)).to.deep.equal({ x: signatures.unknown });
+            expect(spy.add.getCall(0).args).to.deep.equal(['x', { type: 'unknown', attributes: {} }]);
+            expect(spy.scopeAt(1)).to.deep.equal({ x: { type: 'unknown', attributes: {} } });
           });
         });
         describe('with assignment', () => {
@@ -1380,8 +1380,8 @@ function f() {
             });
             it('adds to symbol table', () => {
               expect(spy.add.calledOnce).to.be.true;
-              expect(spy.add.getCall(0).args).to.deep.equal(['x', signatures.unknown]);
-              expect(spy.scopeAt(1)).to.deep.equal({ x: signatures.unknown });
+              expect(spy.add.getCall(0).args).to.deep.equal(['x', { type: 'unknown', attributes: {} }]);
+              expect(spy.scopeAt(1)).to.deep.equal({ x: { type: 'unknown', attributes: {} } });
             });
           });
           describe('rhs is known type', () => {
@@ -1417,14 +1417,14 @@ function f() {
           });
           it('adds to symbol table', () => {
             expect(spy.add.calledOnce).to.be.true;
-            expect(spy.add.getCall(0).args).to.deep.equal(['myVar', signatures.unknown]);
+            expect(spy.add.getCall(0).args).to.deep.equal(['myVar', { type: 'unknown', attributes: {} }]);
             expect(spy.scopeAt(1)).to.deep.equal({ myVar: myType });
-            expect(spy.scopeAt(2)).to.deep.equal({ myVar: signatures.unknown });
+            expect(spy.scopeAt(2)).to.deep.equal({ myVar: { type: 'unknown', attributes: {} } });
           });
         });
       });
       describe('inside function scope', () => {
-        const type = { returnType: signatures.unknown, returnsPromise: false, type: 'function' };
+        const type = { returnType: { type: 'unknown', attributes: {} }, returnsPromise: false, type: 'function' };
         before(() => {
           spy = sinon.spy(new SymbolTable([ { db: signatures.Database }, {} ], signatures));
           writer = new AsyncWriter(signatures, spy);
@@ -1441,7 +1441,7 @@ function f() {
           const calls = spy.updateFunctionScoped.getCall(0);
           expect(calls.args[1]).to.equal('f');
           expect(skipPath(calls.args[2])).to.deep.equal(type);
-          expect(spy.lookup('x')).to.deep.equal(signatures.unknown);
+          expect(spy.lookup('x')).to.deep.equal({ type: 'unknown', attributes: {} });
         });
       });
       describe('inside block scope', () => {
@@ -1507,13 +1507,13 @@ function f() {
             it('decorates AssignmentExpression', (done) => {
               traverse(ast, {
                 AssignmentExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
             });
             it('final symbol table state updated', () => {
-              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: false, attributes: { y: signatures.unknown } });
+              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: false, attributes: { y: { type: 'unknown', attributes: {} } } });
             });
           });
           describe('with string index', () => {
@@ -1532,13 +1532,13 @@ function f() {
             it('decorates AssignmentExpression', (done) => {
               traverse(ast, {
                 AssignmentExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
             });
             it('final symbol table state updated', () => {
-              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: false, attributes: { y: signatures.unknown } });
+              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: false, attributes: { y: { type: 'unknown', attributes: {} } } });
             });
           });
           describe('with number index', () => {
@@ -1557,13 +1557,13 @@ function f() {
             it('decorates AssignmentExpression', (done) => {
               traverse(ast, {
                 AssignmentExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
             });
             it('final symbol table state updated', () => {
-              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: false, attributes: { 0: signatures.unknown } });
+              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: false, attributes: { 0: { type: 'unknown', attributes: {} } } });
             });
           });
           describe('with non-symbol LHS', () => {
@@ -1581,7 +1581,7 @@ function f() {
             it('decorates AssignmentExpression', (done) => {
               traverse(ast, {
                 AssignmentExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
@@ -1618,13 +1618,13 @@ function f() {
             it('decorates AssignmentExpression', (done) => {
               traverse(ast, {
                 AssignmentExpression(path) {
-                  expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                  expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                   done();
                 }
               });
             });
             it('final symbol table state updated', () => {
-              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: true, attributes: { db: signatures.Database, y: signatures.unknown } });
+              expect(spy.scopeAt(1).x).to.deep.equal({ type: 'object', hasAsyncChild: true, attributes: { db: signatures.Database, y: { type: 'unknown', attributes: {} } } });
             });
           });
           describe('with computed index', () => {
@@ -1803,7 +1803,7 @@ function f() {
           it('decorates AssignmentExpression', (done) => {
             traverse(ast, {
               AssignmentExpression(path) {
-                expect(path.node['shellType']).to.deep.equal(signatures.unknown);
+                expect(path.node['shellType']).to.deep.equal({ type: 'unknown', attributes: {} });
                 done();
               }
             });
@@ -1811,15 +1811,15 @@ function f() {
           it('updates symbol table', () => {
             expect(spy.updateIfDefined.calledOnce).to.be.true;
             expect(spy.updateIfDefined.getCall(0).args).to.deep.equal([
-              'x', signatures.unknown
+              'x', { type: 'unknown', attributes: {} }
             ]);
             expect(spy.updateFunctionScoped.calledOnce).to.be.true;
             const args = spy.updateFunctionScoped.getCall(0).args;
             expect(args[1]).to.equal('x');
-            expect(args[2]).to.deep.equal(signatures.unknown);
+            expect(args[2]).to.deep.equal({ type: 'unknown', attributes: {} });
           });
           it('final symbol table state updated', () => {
-            expect(spy.scopeAt(1)).to.deep.equal({ x: signatures.unknown });
+            expect(spy.scopeAt(1)).to.deep.equal({ x: { type: 'unknown', attributes: {} } });
           });
         });
       });
@@ -1948,7 +1948,7 @@ function f() {
             expect(spy.updateFunctionScoped.calledOnce).to.be.true;
             const args = spy.updateFunctionScoped.getCall(0).args;
             expect(args[1]).to.equal('a');
-            expect(args[2]).to.deep.equal(signatures.unknown);
+            expect(args[2]).to.deep.equal({ type: 'unknown', attributes: {} });
           });
           it('final symbol table state updated', () => {
             expect(spy.scopeAt(1)).to.deep.equal({ a: signatures.Database });
@@ -1973,7 +1973,7 @@ function f() {
           it('updates symbol table for let', () => {
             expect(spy.updateFunctionScoped.calledOnce).to.be.false;
             expect(spy.add.calledOnce).to.be.true;
-            expect(spy.add.getCall(0).args).to.deep.equal(['a', signatures.unknown]);
+            expect(spy.add.getCall(0).args).to.deep.equal(['a', { type: 'unknown', attributes: {} }]);
           });
           it('final symbol table state updated', () => {
             expect(spy.scopeAt(1)).to.deep.equal({ a: signatures.Database });
@@ -1992,7 +1992,7 @@ function f() {
           it('updates symbol table for initial assignment', () => {
             expect(spy.updateIfDefined.calledTwice).to.be.true;
             expect(spy.updateIfDefined.getCall(0).args).to.deep.equal([
-              'a', signatures.unknown
+              'a', { type: 'unknown', attributes: {} }
             ]);
             expect(spy.updateIfDefined.getCall(1).args).to.deep.equal([
               'a', signatures.Database
@@ -2002,7 +2002,7 @@ function f() {
             expect(spy.updateFunctionScoped.calledOnce).to.be.true;
             const args = spy.updateFunctionScoped.getCall(0).args;
             expect(args[1]).to.equal('a');
-            expect(args[2]).to.deep.equal(signatures.unknown);
+            expect(args[2]).to.deep.equal({ type: 'unknown', attributes: {} });
           });
           it('final symbol table state updated', () => {
             expect(spy.scopeAt(1)).to.deep.equal({ a: signatures.Database });
@@ -2023,7 +2023,7 @@ function f() {
           expect(output).to.equal('function x() {\n  a = db;\n}');
         });
         it('final symbol table state updated', () => {
-          expect(skipPath(spy.scopeAt(1).x)).to.deep.equal( { returnType: signatures.unknown, returnsPromise: false, type: 'function' } );
+          expect(skipPath(spy.scopeAt(1).x)).to.deep.equal( { returnType: { type: 'unknown', attributes: {} }, returnsPromise: false, type: 'function' } );
         });
       });
       describe('existing symbol', () => {
@@ -2038,8 +2038,8 @@ function f() {
             expect(output).to.equal('function x() {\n  a = db;\n}');
           });
           it('final symbol table state updated', () => {
-            expect(spy.scopeAt(1).a).to.deep.equal( signatures.unknown);
-            expect(skipPath(spy.scopeAt(1).x)).to.deep.equal( { returnType: signatures.unknown, returnsPromise: false, type: 'function' } );
+            expect(spy.scopeAt(1).a).to.deep.equal( { type: 'unknown', attributes: {} });
+            expect(skipPath(spy.scopeAt(1).x)).to.deep.equal( { returnType: { type: 'unknown', attributes: {} }, returnsPromise: false, type: 'function' } );
           });
         });
       });
@@ -2121,7 +2121,7 @@ function f() {
         it('decorates Function', (done) => {
           traverse(ast, {
             Function(path) {
-              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: signatures.unknown });
+              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: { type: 'unknown', attributes: {} } });
               done();
             }
           });
@@ -2144,7 +2144,7 @@ function f() {
         it('decorates Function', (done) => {
           traverse(ast, {
             Function(path) {
-              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: signatures.unknown });
+              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: { type: 'unknown', attributes: {} } });
               done();
             }
           });
@@ -2153,7 +2153,7 @@ function f() {
           expect(spy.updateFunctionScoped.calledOnce).to.be.true;
           const calls = spy.updateFunctionScoped.getCall(0).args;
           expect(calls[1]).to.equal('fn');
-          expect(skipPath(calls[2])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: signatures.unknown });
+          expect(skipPath(calls[2])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: { type: 'unknown', attributes: {} } });
         });
       });
       describe('already an async function', () => {
@@ -2173,7 +2173,7 @@ function f() {
         it('decorates Function', (done) => {
           traverse(ast, {
             Function(path) {
-              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: signatures.unknown });
+              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: { type: 'unknown', attributes: {} } });
               done();
             }
           });
@@ -2182,7 +2182,7 @@ function f() {
           expect(spy.updateFunctionScoped.calledOnce).to.be.true;
           const calls = spy.updateFunctionScoped.getCall(0).args;
           expect(calls[1]).to.equal('fn');
-          expect(skipPath(calls[2])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: signatures.unknown });
+          expect(skipPath(calls[2])).to.deep.equal({ type: 'function', returnsPromise: true, returnType: { type: 'unknown', attributes: {} } });
         });
       });
     });
@@ -2204,7 +2204,7 @@ function f() {
         it('decorates Function', (done) => {
           traverse(ast, {
             Function(path) {
-              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: false, returnType: signatures.unknown });
+              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: false, returnType: { type: 'unknown', attributes: {} } });
               done();
             }
           });
@@ -2269,7 +2269,7 @@ function f() {
         it('decorates Function', (done) => {
           traverse(ast, {
             Function(path) {
-              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: false, returnType: signatures.unknown });
+              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: false, returnType: { type: 'unknown', attributes: {} } });
               done();
             }
           });
@@ -2324,7 +2324,7 @@ function f() {
         it('decorates Function', (done) => {
           traverse(ast, {
             Function(path) {
-              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: false, returnType: signatures.unknown });
+              expect(skipPath(path.node['shellType'])).to.deep.equal({ type: 'function', returnsPromise: false, returnType: { type: 'unknown', attributes: {} } });
               done();
             }
           });
@@ -2418,7 +2418,7 @@ function f() {
                 expect(skipPath(path.node['shellType'])).to.deep.equal({
                   type: 'function',
                   returnsPromise: false,
-                  returnType: signatures.unknown
+                  returnType: { type: 'unknown', attributes: {} }
                 });
                 done();
               }
@@ -2457,7 +2457,7 @@ function f() {
         });
         it('updates symbol table', () => {
           expect(Object.keys(spy.scopeAt(1))).to.deep.equal(['f']);
-          expect(skipPath(spy.scopeAt(1).f)).to.deep.equal({ type: 'function', returnType: signatures.unknown, returnsPromise: false } );
+          expect(skipPath(spy.scopeAt(1).f)).to.deep.equal({ type: 'function', returnType: { type: 'unknown', attributes: {} }, returnsPromise: false } );
         });
       });
       describe('ensure assigned keyword function name is not hoisted', () => {
@@ -2473,8 +2473,8 @@ function f() {
             expect(output).to.equal('const c = function f() {};');
           });
           it('updates symbol table', () => {
-            expect(spy.lookup('f')).to.deep.equal(signatures.unknown);
-            expect(skipPath(spy.lookup('c'))).to.deep.equal({ type: 'function', returnType: signatures.unknown, returnsPromise: false });
+            expect(spy.lookup('f')).to.deep.equal({ type: 'unknown', attributes: {} });
+            expect(skipPath(spy.lookup('c'))).to.deep.equal({ type: 'function', returnType: { type: 'unknown', attributes: {} }, returnsPromise: false });
           });
         });
         describe('AssignmentExpression', () => {
@@ -2489,8 +2489,8 @@ function f() {
             expect(output).to.equal('c = function f() {};');
           });
           it('updates symbol table', () => {
-            expect(spy.lookup('f')).to.deep.equal(signatures.unknown);
-            expect(skipPath(spy.lookup('c'))).to.deep.equal({ type: 'function', returnType: signatures.unknown, returnsPromise: false });
+            expect(spy.lookup('f')).to.deep.equal({ type: 'unknown', attributes: {} });
+            expect(skipPath(spy.lookup('c'))).to.deep.equal({ type: 'function', returnType: { type: 'unknown', attributes: {} }, returnsPromise: false });
           });
         });
       });
@@ -2553,7 +2553,7 @@ function f() {
           type: 'Test',
           attributes: {
             regularFn: { type: 'function', returnType: signatures.Database, returnsPromise: false },
-            awaitFn: { type: 'function', returnType: signatures.unknown, returnsPromise: true }
+            awaitFn: { type: 'function', returnType: { type: 'unknown', attributes: {} }, returnsPromise: true }
           }
         }
       };
@@ -2782,6 +2782,22 @@ class Test {
       });
     });
   });
+  describe('classes with returnsPromise', () => {
+    describe('with promise', () => {
+      before(() => {
+        writer = new AsyncWriter(signatures);
+      });
+      it('adds await in front of new', () => {
+        expect(writer.compile('new Mongo()')).to.equal('await new Mongo();');
+      });
+      it('adds await in front of regular call', () => {
+        expect(writer.compile('Mongo()')).to.equal('await Mongo();');
+      });
+      it('updates if within function', () => {
+        expect(writer.compile('() => { m = new Mongo() }')).to.equal('async () => {\n  m = await new Mongo();\n};');
+      });
+    });
+  });
   describe('NewExpression', () => {
     const type = {
       type: 'classdef',
@@ -2789,7 +2805,7 @@ class Test {
         type: 'Test',
         attributes: {
           regularFn: { type: 'function', returnType: signatures.Database, returnsPromise: false },
-          awaitFn: { type: 'function', returnType: signatures.unknown, returnsPromise: true }
+          awaitFn: { type: 'function', returnType: { type: 'unknown', attributes: {} }, returnsPromise: true }
         }
       }
     };
@@ -2916,7 +2932,7 @@ if (TEST) {
                 }
               });
               it('symbol table final state is correct', () => {
-                expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+                expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
               });
             });
             describe('neither async', () => {
@@ -2938,7 +2954,7 @@ if (TEST) {
 }`);
               });
               it('symbol table final state is correct', () => {
-                expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+                expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
               });
             });
           });
@@ -2978,7 +2994,7 @@ if (TEST) {
 }`);
           });
           it('symbol table final state is correct', () => {
-            expect(spy.scopeAt(1)).to.deep.equal({ a: signatures.unknown }); // TODO: ensure cond is like block
+            expect(spy.scopeAt(1)).to.deep.equal({ a: { type: 'unknown', attributes: {} } }); // TODO: ensure cond is like block
           });
           it('throws for shell type', () => {
             try {
@@ -3004,7 +3020,7 @@ if (TEST) {
 }`);
           });
           it('symbol table final state is correct', () => {
-            expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+            expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
           });
           it('throws for shell type', () => {
             try {
@@ -3063,7 +3079,7 @@ if (TEST) {
                 }
               });
               it('symbol table final state is correct', () => {
-                expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+                expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
               });
             });
             describe('inner type async', () => {
@@ -3086,7 +3102,7 @@ if (TEST) {
                 }
               });
               it('symbol table final state is correct', () => {
-                expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+                expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
               });
             });
             describe('neither async', () => {
@@ -3109,7 +3125,7 @@ if (TEST) {
 }`);
               });
               it('symbol table final state is correct', () => {
-                expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+                expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
               });
             });
           });
@@ -3136,7 +3152,7 @@ if (TEST) {
 }`);
           });
           it('symbol table final state is correct', () => {
-            expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+            expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
           });
         });
       });
@@ -3189,7 +3205,7 @@ while (TEST) {
             expect(output).to.equal(expected);
           });
           it('symbol table final state is correct', () => {
-            expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+            expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
           });
         });
         describe('different signatures', () => {
@@ -3259,7 +3275,7 @@ for (let t = 0; t < 100; t++) {
             expect(output).to.equal(expected);
           });
           it('symbol table final state is correct', () => {
-            expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+            expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
           });
         });
         describe('different signatures', () => {
@@ -3329,7 +3345,7 @@ do {
             expect(output).to.equal(expected);
           });
           it('symbol table final state is correct', () => {
-            expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+            expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
           });
         });
         describe('different signatures', () => {
@@ -3457,7 +3473,7 @@ switch(TEST) {
             expect(output).to.equal(expected);
           });
           it('symbol table final state is correct', () => {
-            expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
+            expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
           });
         });
         describe('different signatures', () => {
@@ -3567,9 +3583,9 @@ switch(TEST) {
         it('compiles correctly', () => {
           expect(output).to.equal(expected);
         });
-        it('symbol table final state is correct', () => {
-          expect(spy.lookup('a')).to.deep.equal(signatures.unknown);
-        });
+        // it('symbol table final state is correct', () => {
+        //   expect(spy.lookup('a')).to.deep.equal({ type: 'unknown', attributes: {} });
+        // });
       });
       describe('different signatures', () => {
         const inputLoop = 'a = TEST ? 1 : db';
@@ -3590,15 +3606,20 @@ switch(TEST) {
   describe('Assign API type', () => {
     before(() => {
       writer = new AsyncWriter(signatures);
-      writer.symbols.initializeApiObjects({ db: signatures.Database });
+      writer.symbols.initializeApiObjects({ rs: myType, db: signatures.Database });
     });
     it('init', () => {
-      expect(writer.symbols.scopeAt(0).db).to.deep.equal({
-        api: true, ...signatures.Database
+      expect(writer.symbols.scopeAt(0).rs).to.deep.equal({
+        api: true,
+        type: 'myType',
+        attributes: { myAttr: { type: 'unknown', attributes: {}, api: true } }
       });
+      const m = writer.symbols.scopeAt(0).Mongo;
+      expect(m.hasAsyncChild).to.be.true;
+      expect(m.returnsPromise).to.be.true;
     });
     it('regular add', (done) => {
-      input = 'const db = 1';
+      input = 'const rs = 1';
       try {
         writer.compile(input);
       } catch (err) {
@@ -3606,8 +3627,8 @@ switch(TEST) {
         done();
       }
     });
-    it('ok with assigning db to other var, but not attr', (done) => {
-      expect(writer.compile('other = db')).to.equal('other = db;');
+    it('ok with assigning rs to other var, but not attr', (done) => {
+      expect(writer.compile('other = rs')).to.equal('other = rs;');
       input = 'other.key = 1';
       try {
         writer.compile(input);
@@ -3617,8 +3638,9 @@ switch(TEST) {
       }
     });
     it('ok to reassign', () => {
-      expect(writer.compile('other = db')).to.equal('other = db;');
+      expect(writer.compile('other = rs')).to.equal('other = rs;');
       expect(writer.compile('other = 1')).to.equal('other = 1;');
+      expect(writer.compile('other = rs.coll')).to.equal('other = rs.coll;');
       expect(writer.compile('other = db.coll')).to.equal('other = db.coll;');
     });
     it('not ok to reassign attribute', (done) => {
@@ -3632,7 +3654,7 @@ switch(TEST) {
       }
     });
     it('addToParent', (done) => {
-      input = 'class db {}';
+      input = 'class rs {}';
       try {
         writer.compile(input);
       } catch (err) {
@@ -3641,16 +3663,19 @@ switch(TEST) {
       }
     });
     it('updateIfDefined', (done) => {
-      input = 'db = 1';
+      input = 'rs = 1';
       try {
         writer.compile(input);
       } catch (err) {
         expect(err.name).to.be.equal('MongoshInvalidInputError');
         done();
       }
+    });
+    it('does not error with db', () => {
+      expect(writer.compile('db = 1')).to.equal('db = 1;');
     });
     it('updateAttribute', (done) => {
-      input = 'db.coll = 1';
+      input = 'rs.coll = 1';
       try {
         writer.compile(input);
       } catch (err) {
@@ -3658,25 +3683,23 @@ switch(TEST) {
         done();
       }
     });
-    describe('updateFunctionScoped', () => {
-      it('var', (done) => {
-        input = 'var db = 1';
-        try {
-          writer.compile(input);
-        } catch (err) {
-          expect(err.name).to.be.equal('MongoshInvalidInputError');
-          done();
-        }
-      });
-      it('func', (done) => {
-        input = 'function db() { return 1; }';
-        try {
-          writer.compile(input);
-        } catch (err) {
-          expect(err.name).to.be.equal('MongoshInvalidInputError');
-          done();
-        }
-      });
+    it('var', (done) => {
+      input = 'var rs = 1';
+      try {
+        writer.compile(input);
+      } catch (err) {
+        expect(err.name).to.be.equal('MongoshInvalidInputError');
+        done();
+      }
+    });
+    it('func', (done) => {
+      input = 'function rs() { return 1; }';
+      try {
+        writer.compile(input);
+      } catch (err) {
+        expect(err.name).to.be.equal('MongoshInvalidInputError');
+        done();
+      }
     });
   });
   describe('recursion', () => {
@@ -3706,7 +3729,7 @@ function f(arg) {
         expect(skipPath(spy.lookup('f'))).to.deep.equal({
           type: 'function',
           returnsPromise: false,
-          returnType: signatures.unknown
+          returnType: { type: 'unknown', attributes: {} }
         });
       });
     });
@@ -3736,7 +3759,7 @@ function f(arg) {
         expect(skipPath(spy.lookup('f'))).to.deep.equal({
           type: 'function',
           returnsPromise: true,
-          returnType: signatures.unknown
+          returnType: { type: 'unknown', attributes: {} }
         });
       });
     });
